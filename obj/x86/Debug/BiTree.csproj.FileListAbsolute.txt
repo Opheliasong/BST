@@ -1,0 +1,4 @@
+C:\Users\red\Documents\Projects\BiTree\bin\Debug\BiTree.pdb
+C:\Users\red\Documents\Projects\BiTree\bin\Debug\BiTree.exe
+C:\Users\red\Documents\Projects\BiTree\obj\x86\Debug\BiTree.exe
+C:\Users\red\Documents\Projects\BiTree\obj\x86\Debug\BiTree.pdb
