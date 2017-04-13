@@ -1,4 +1,5 @@
-﻿using System;
+﻿#define RBT
+using System;
 
 namespace BiTree
 {
@@ -34,8 +35,6 @@ namespace BiTree
         {
             value = val;
         }
-
-
     }
 
     class BSTree
@@ -291,12 +290,257 @@ namespace BiTree
         }
     }
 
+    class RBNode{
+        /// <summary>
+        /// node's Red-Black flag
+        /// </summary>
+        public bool isRed = true;
+        public RBNode()
+        {
+            //new node is red
+            isRed = true;
+        }
+
+        public RBNode(int val)
+        {
+            //new node is red
+            isRed = true;
+            Value = val;
+        }
+
+        public bool isLeaf {
+            get {
+                if(children[0] == null && children[1] == null)
+                {
+                    return true;
+                }
+                return false;
+            }
+        }
+        bool init = false;
+        public bool Init{
+            get{
+                return init;
+            }
+        }
+        public int Value{
+            get {
+                return value;
+            }
+            set {
+                this.value = value;
+                init = true;
+            }
+        }
+        int value;
+
+        /// <summary>
+        /// The children.
+        /// childern[0] = left
+        /// childeren[1] = right
+        /// </summary>
+        public RBNode[] children = new RBNode[2];
+        public RBNode parent = null;
+
+        public void SetBlack()
+        {
+            isRed = false;
+        }
+
+        public void SetRed()
+        {
+            isRed = true;
+        }
+
+        public void SetParent(RBNode p)
+        {
+            parent = p;
+        }
+    }
+
+    class RBTree
+    {
+        public RBNode root = null;
+
+        public void Insert(int val)
+        {
+            if(root == null)
+            {
+                root = new RBNode(val);
+                //Root is always black.
+                root.SetBlack();
+                return;
+            }
+
+            RBNode find = root;
+            int idx = 0;
+            for(RBNode iter = root; iter != null; )
+            {
+                find = iter;
+
+                if(find.Value > val)
+                {
+                    idx = 0;
+                    iter= iter.children[0];
+                }
+                else
+                {
+                    idx = 1;
+                    iter= iter.children[1];
+                }
+            }
+
+            RBNode newNode = new RBNode(val);
+            LinkNode(ref newNode, ref find, ref find.children[idx]);
+        }
+
+        void LinkNode(ref RBNode node, ref RBNode parent, ref RBNode link)
+        {
+            node.parent = parent;
+            node.children[0] = null;
+            node.children[1] = null;
+            link = node;
+        }
+
+        void Rotate_left(ref RBNode rotationNode)
+        {
+            RBNode right = rotationNode.children[1];
+            RBNode parent = rotationNode.parent;
+            if((rotationNode.children[1] = right.children[0]) != null)
+            {
+                //If right nodes left child isn't null, 
+                //it's will set to rotation nodes right child and that node parent is rotation node
+                right.children[0].SetParent(rotationNode);
+            }
+            right.children[0] = rotationNode;
+            right.SetParent(parent);
+
+            if(parent)
+            {
+                if(rotationNode == parent.children[0])
+                {
+                    parent.children[0] = right;
+                }
+                else
+                {
+                    parent.children[1] = right;
+                }
+            }
+            else
+            {
+                root = right;
+            }
+            rotationNode.SetParent(right);
+        }
+
+        void Rotate_Right(ref RBNode rotateNode)
+        {
+            RBNode left = rotateNode.children[0];
+            RBNode parent = rotateNode.parent;
+
+            if((rotateNode.children[0] = left.children[1]) != null)
+            {
+                left.children[1].SetParent(rotateNode);
+            }
+            left.children[1] = rotateNode;
+            left.SetParent(parent);
+
+            if(parent)
+            {
+                if(rotateNode == parent.children[0])
+                {
+                    parent.children[0] = left;
+                }
+                else
+                {
+                    parent.children[1] = left;
+                }
+            }
+            else
+            {
+                root = left;
+            }
+            rotateNode.SetParent(left);
+        }
+
+        void InsertColor(ref RBNode node)
+        {
+            RBNode parent, gparent;
+
+            while((parent = node.parent) != null &&  parent.isRed)
+            {
+                gparent = parent.parent;
+
+                if(parent == gparent.children[0])
+                {
+                    //If parent node is gparent left child
+                    {
+                        RBNode uncle = gparent.children[1];
+                        if(uncle != null && uncle.isRed)
+                        {
+                            //If uncle is red node
+                            uncle.SetBlack();
+                            parent.SetBlack();
+                            gparent.SetRed();
+                            node = gparent;
+                            continue;
+                        }                        
+                    }
+
+                    //If uncle is not available or uncle is black
+                    if(node == parent.children[1])
+                    {
+                        //this node is parent's right child
+                        RBNode temp = null;
+                        Rotate_left(ref parent);
+                        temp = parent;
+                        node.parent = node;
+                        node = temp;
+                    }
+
+                    parent.SetBlack();
+                    gparent.SetRed();
+                    Rotate_Right(ref gparent);
+                }
+                else
+                {
+                    //If parent node is gparent right child
+                    {
+                        RBNode uncle = gparent.children[0];
+                        if(uncle != null && uncle.isRed)
+                        {
+                            uncle.SetBlack();
+                            parent.SetBlack();
+                            gparent.SetRed();
+                            node = gparent;
+                            continue;
+                        }
+                    }
+
+                    if(parent.children[0] == null)
+                    {
+                        RBNode temp = null;
+                        Rotate_Right(ref parent);
+                        temp = parent;
+                        parent = node;
+                        node = temp;
+                    }
+                    parent.SetBlack();
+                    gparent.SetRed();
+                    Rotate_left(ref gparent);
+                }
+            }
+
+            root.SetBlack();
+        }
+    }
+
     class MainClass
     {
         public static void Main (string[] args)
         {
-            Console.WriteLine ("Hello World!");
-
+            Console.WriteLine ("Hello World!");            
+#if (BST)
             BSTree bTree = new BSTree();
             bTree.Insert(10);
             bTree.Insert(12);
@@ -318,6 +562,12 @@ namespace BiTree
             PrintNode(ref iter);
             iter = bTree.Search(10);
             PrintNode(ref iter);
+#elif (RBT)
+            RBTree RBTree = new RBTree();
+            RBTree.Insert(1);
+            RBTree.Insert(2);
+            RBTree.Insert(3);
+#endif            
         }
 
         public static void PrintNode(ref Node node)
