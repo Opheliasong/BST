@@ -4,3 +4,7 @@ obj/x86/Debug/BiTree.pdb
 bin/Debug/BiTree.exe
 *.pdb
 obj/x86/Debug/BiTree.csproj.FileListAbsolute.txt
+*.exe
+bin/Debug/BiTree.pdb
+*.txt
+obj/x86/Debug/BiTree.exe
