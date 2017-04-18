@@ -535,6 +535,85 @@ namespace BiTree
 
             root.SetBlack();
         }
+
+        public void Delete(int val)
+        {
+            RBNode node = Search(val);
+
+            if(node != null)
+            {
+                if(node.isLeaf)
+                {
+                    if(node.parent.children[0] == node)
+                    {
+                        node.parent.children[0] = null;
+                    }
+                    else
+                    {
+                        node.children[1] = null;
+                    }
+                }
+            }
+        }
+
+        void ReplaceNodeParent(ref RBNode node, RBNode newNode = null)
+        {
+            if(node.parent != null)
+            {
+                if(node == node.parent.children[0])
+                {
+                    node.parent.children[0] = newNode;
+                }
+                else
+                {
+                    node.parent.children[1] = newNode;
+                }
+            }
+
+            if(newNode != null)
+            {
+                newNode.parent = node.parent;
+            }
+        }
+
+        public RBNode Search(int val)
+        {
+            RBNode iter = root;
+
+            while(iter.Value == val)
+            {
+                if(iter.Value < val)
+                {
+                    iter = iter.children[0];
+                }
+                else if(iter.Value > val)
+                {
+                    iter = iter.children[1];
+                }
+            }
+            return iter;
+        }
+
+        public RBNode Search_Recursive(int val, RBNode node = null)
+        {
+            if(node == null)
+            {
+                node = root;
+            }
+
+            if(node.Value == val)
+            {
+                return node;
+            }
+            else if(node.Value > val)
+            {
+                return Search_Recursive(val, node.children[0]);
+            }
+            else
+            {
+                return Search_Recursive(val, node.children[1]);
+            }
+        }
     }
 
     class MainClass
@@ -574,6 +653,12 @@ namespace BiTree
             RBTree.Insert(6);
             RBTree.Insert(7);
             RBTree.Insert(8);
+
+            var finder = RBTree.Search_Recursive(5);
+            if(finder != null)
+            {
+                Console.WriteLine("Find it");
+            }
 #endif            
         }
 
