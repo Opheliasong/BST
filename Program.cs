@@ -392,6 +392,8 @@ namespace BiTree
 
             RBNode newNode = new RBNode(val);
             LinkNode(ref newNode, ref find, ref find.children[idx]);
+
+            InsertColor(ref newNode);
         }
 
         void LinkNode(ref RBNode node, ref RBNode parent, ref RBNode link)
@@ -415,7 +417,7 @@ namespace BiTree
             right.children[0] = rotationNode;
             right.SetParent(parent);
 
-            if(parent)
+            if(parent != null)
             {
                 if(rotationNode == parent.children[0])
                 {
@@ -445,7 +447,7 @@ namespace BiTree
             left.children[1] = rotateNode;
             left.SetParent(parent);
 
-            if(parent)
+            if(parent != null)
             {
                 if(rotateNode == parent.children[0])
                 {
@@ -517,7 +519,7 @@ namespace BiTree
                         }
                     }
 
-                    if(parent.children[0] == null)
+                    if(parent.children[0] == node)
                     {
                         RBNode temp = null;
                         Rotate_Right(ref parent);
@@ -567,6 +569,11 @@ namespace BiTree
             RBTree.Insert(1);
             RBTree.Insert(2);
             RBTree.Insert(3);
+            RBTree.Insert(4);
+            RBTree.Insert(5);
+            RBTree.Insert(6);
+            RBTree.Insert(7);
+            RBTree.Insert(8);
 #endif            
         }
 
