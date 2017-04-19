@@ -536,22 +536,39 @@ namespace BiTree
             root.SetBlack();
         }
 
-        public void Delete(int val)
-        {
-            RBNode node = Search(val);
-
+        public void Delete(RBNode node)
+        {            
             if(node != null)
             {
                 if(node.isLeaf)
                 {
+                    //node hasn't childern
                     if(node.parent.children[0] == node)
                     {
                         node.parent.children[0] = null;
                     }
                     else
                     {
-                        node.children[1] = null;
+                        node.parent.children[1] = null;
                     }
+                    node.parent = null;
+                }
+                else if(node.children[0] != null && node.children[1] != null)
+                {
+                    //both childen is avail.
+                    var temp = SearchMinNode(node);
+                    node.Value = temp.Value;
+                    Delete(temp);
+                }
+                else if(node.children[0] != null)
+                {
+                    //node has only left child.
+                    ReplaceNodeParent(ref node, node.children[0]);
+                }
+                else if(node.children[1] != null)
+                {
+                    //node has only right child
+                    ReplaceNodeParent(ref node, node.children[1]);
                 }
             }
         }
@@ -614,6 +631,20 @@ namespace BiTree
                 return Search_Recursive(val, node.children[1]);
             }
         }
+
+        public RBNode SearchMinNode(RBNode node)
+        {
+            RBNode iter = node.children[0];
+
+            while(!iter.isLeaf)
+            {
+                if(iter.children[0] != null)
+                {
+                    iter = iter.children[0];
+                }
+            }
+            return iter;
+        }
     }
 
     class MainClass
@@ -644,21 +675,19 @@ namespace BiTree
             iter = bTree.Search(10);
             PrintNode(ref iter);
 #elif (RBT)
-            RBTree RBTree = new RBTree();
-            RBTree.Insert(1);
-            RBTree.Insert(2);
-            RBTree.Insert(3);
-            RBTree.Insert(4);
-            RBTree.Insert(5);
-            RBTree.Insert(6);
-            RBTree.Insert(7);
-            RBTree.Insert(8);
+            RBTree tree = new RBTree();
+            tree.Insert(1);
+            tree.Insert(2);
+            tree.Insert(3);
+            tree.Insert(4);
+            tree.Insert(5);
+            tree.Insert(6);
+            tree.Insert(7);
+            tree.Insert(8);
 
-            var finder = RBTree.Search_Recursive(5);
-            if(finder != null)
-            {
-                Console.WriteLine("Find it");
-            }
+            var finder = tree.Search_Recursive(7);
+
+            tree.Delete(finder);
 #endif            
         }
 
